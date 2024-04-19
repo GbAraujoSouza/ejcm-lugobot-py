@@ -16,7 +16,7 @@ class MyBot(lugo4py.Bot, ABC):
             move_order = inspector.make_order_move_max_speed(ball_position)
 
             # Try other methods to create Move Orders:
-            # move_order = reader.make_order_move_by_direction(lugo4py.DIRECTION_FORWARD)
+            # move_order = inspector.make_order_move_by_direction(lugo4py.DIRECTION_FORWARD, 100)
             # move_order = reader.make_order_move_from_vector(lugo4py.sub_vector(vector_a, vector_b))
 
             # we can ALWAYS try to catch the ball
@@ -33,7 +33,12 @@ class MyBot(lugo4py.Bot, ABC):
 
             ball_position = inspector.get_ball().position
 
-            move_order = inspector.make_order_move_max_speed(ball_position)
+            if self.shouldIHelp(inspector.get_me(), inspector.get_my_team_players(), ball_position, 3):
+                move_dest = ball_position
+            else:
+                move_dest = get_my_expected_position(inspector, self.mapper, self.number)
+
+            move_order = inspector.make_order_move_max_speed(move_dest)
             # we can ALWAYS try to catch the ball
             catch_order = inspector.make_order_catch()
 
@@ -71,7 +76,7 @@ class MyBot(lugo4py.Bot, ABC):
             ball_holder_region = self.mapper.get_region_from_point(ball_holder_position)
             my_region = self.mapper.get_region_from_point(inspector.get_me().position)
 
-            if self.is_near(ball_holder_region, my_region):
+            if self.shouldIHelp(inspector.get_me(), inspector.get_my_team_players(), ball_holder_position, 3):
                 move_dest = ball_holder_position
             else:
                 move_dest = get_my_expected_position(inspector, self.mapper, self.number)
@@ -105,3 +110,14 @@ class MyBot(lugo4py.Bot, ABC):
         max_distance = 2
         return abs(region_origin.get_row() - dest_origin.get_row()) <= max_distance and abs(
             region_origin.get_col() - dest_origin.get_col()) <= max_distance
+
+    def shouldIHelp(self, me: lugo4py.Player, myTeam: List[lugo4py.Player], targetPosition: lugo4py.Point, maxPlayers: int):
+        nearestPlayers = 0
+        myDistance = lugo4py.geo.distance_between_points(me.position, targetPosition)
+        for teamMate in myTeam:
+            if teamMate.number != me.number and lugo4py.geo.distance_between_points(teamMate.position, targetPosition) < myDistance:
+                nearestPlayers += 1
+                if (nearestPlayers >= maxPlayers):
+                    return False
+        return True
+    
