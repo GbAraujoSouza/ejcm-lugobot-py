@@ -140,3 +140,18 @@ class MyBot(lugo4py.Bot, ABC):
                 nearestPlayer = opponent
             lastDistance = distanceBetweenMeAndPlayer
         return nearestPlayer
+
+    def equalRegion(self, region1: lugo4py.mapper.Region, region2: lugo4py.mapper.Region):
+        return region1.col == region2.col and region1.row == region2.row
+    
+    def getGoalCorner(self, inspector: lugo4py.GameSnapshotInspector):
+        goalKeeperPosition = inspector.get_opponent_goalkeeper().position
+        goalCenter = self.mapper.get_attack_goal().get_center()
+
+        if (goalKeeperPosition.y >= goalCenter.y):
+            return self.mapper.get_attack_goal().get_bottom_pole()
+        return self.mapper.get_attack_goal().get_top_pole()
+
+    def holdPosition(self, inspector: lugo4py.GameSnapshotInspector):
+        expectedPosition = get_my_expected_position(inspector, self.mapper, self.number)
+        return lugo4py.geo.distance_between_points(inspector.get_me().position, expectedPosition) < lugo4py.specs.PLAYER_SIZE
