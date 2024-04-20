@@ -109,6 +109,11 @@ class MyBot(lugo4py.Bot, ABC):
 
             if state != lugo4py.PLAYER_STATE.DISPUTING_THE_BALL:
                 position = self.mapper.get_attack_goal().get_center()
+            
+            if state == lugo4py.PLAYER_STATE.HOLDING_THE_BALL:
+                # chutar para a lateral esquerda do meio de campo\
+                target = lugo4py.Point(lugo4py.specs.FIELD_WIDTH // 2, lugo4py.specs.MAX_Y_COORDINATE)
+                return [inspector.make_order_kick_max_speed(target)]
 
             my_order = inspector.make_order_move_max_speed(position)
 
