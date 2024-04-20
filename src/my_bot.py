@@ -80,16 +80,16 @@ class MyBot(lugo4py.Bot, ABC):
     def on_supporting(self, inspector: lugo4py.GameSnapshotInspector) -> List[lugo4py.Order]:
         try:
             ball_holder_position = inspector.get_ball().position
+            myPosition = inspector.get_me().position
 
-            # "point" is an X and Y raw coordinate referenced by the field, so the side of the field matters!
-            # "region" is a mapped area of the field create by your mapper! so the side of the field DO NOT matter!
-            ball_holder_region = self.mapper.get_region_from_point(ball_holder_position)
-            my_region = self.mapper.get_region_from_point(inspector.get_me().position)
+            move_dest = get_my_expected_position(inspector, self.mapper, self.number)
 
             if self.shouldIHelp(inspector.get_me(), inspector.get_my_team_players(), ball_holder_position, 3):
                 move_dest = ball_holder_position
-            else:
-                move_dest = get_my_expected_position(inspector, self.mapper, self.number)
+
+            if (lugo4py.geo.distance_between_points(myPosition, ball_holder_position) < 3 * lugo4py.specs.PLAYER_SIZE or
+                self.holdPosition(inspector)):
+                return [inspector.make_order_move_to_stop()]
 
             move_order = inspector.make_order_move_max_speed(move_dest)
             return [move_order]
