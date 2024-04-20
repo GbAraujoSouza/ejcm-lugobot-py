@@ -42,6 +42,11 @@ class MyBot(lugo4py.Bot, ABC):
             # we can ALWAYS try to catch the ball
             catch_order = inspector.make_order_catch()
 
+            # checar se ja está na posicao esperada
+            if self.holdPosition(inspector):
+                return [inspector.make_order_move_to_stop()]
+
+
             return [move_order, catch_order]
         except Exception as e:
             print(f'did not play this turn due to exception {e}')
