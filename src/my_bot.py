@@ -13,12 +13,11 @@ class MyBot(lugo4py.Bot, ABC):
             ball_position = inspector.get_ball().position
 
             # try the auto complete for reader.make_order_... there are other options
-            move_order = inspector.make_order_move_max_speed(ball_position)
+            move_order = inspector.make_order_move_max_speed(get_my_expected_position(inspector, self.mapper, self.number))
 
-            # Try other methods to create Move Orders:
-            # move_order = inspector.make_order_move_by_direction(lugo4py.DIRECTION_FORWARD, 100)
-            # move_order = reader.make_order_move_from_vector(lugo4py.sub_vector(vector_a, vector_b))
 
+            if self.shouldIHelp(inspector.get_me(), inspector.get_my_team_players(), ball_position, 3):
+                move_order = inspector.make_order_move_max_speed(ball_position)
             # we can ALWAYS try to catch the ball
             catch_order = inspector.make_order_catch()
 
