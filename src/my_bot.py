@@ -126,8 +126,7 @@ class MyBot(lugo4py.Bot, ABC):
     def getting_ready(self, snapshot: lugo4py.GameSnapshot):
         print('getting ready')
 
-    def is_near(self, region_origin: lugo4py.mapper.Region, dest_origin: lugo4py.mapper.Region) -> bool:
-        max_distance = 2
+    def is_near(self, region_origin: lugo4py.mapper.Region, dest_origin: lugo4py.mapper.Region, max_distance: int) -> bool:
         return abs(region_origin.get_row() - dest_origin.get_row()) <= max_distance and abs(
             region_origin.get_col() - dest_origin.get_col()) <= max_distance
 
