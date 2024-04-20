@@ -55,12 +55,22 @@ class MyBot(lugo4py.Bot, ABC):
             opponent_goal_point = self.mapper.get_attack_goal()
             goal_region = self.mapper.get_region_from_point(opponent_goal_point.get_center())
             my_region = self.mapper.get_region_from_point(inspector.get_me().position)
+            nearestOpponentRegion = self.mapper.get_region_from_point(self.getNearestOpponent(inspector.get_me(), inspector.get_opponent_players()).position)
+            nearestAlly = self.getNearestAlly(inspector.get_me(), inspector.get_my_team_players())
 
-            if self.is_near(my_region, goal_region):
-                my_order = inspector.make_order_kick_max_speed(opponent_goal_point.get_center())
-            else:
-                my_order = inspector.make_order_move_max_speed(opponent_goal_point.get_center())
+            my_order = inspector.make_order_move_max_speed(opponent_goal_point.get_center())
 
+            # Tocar pro amigo
+            if self.equalRegion(nearestOpponentRegion, my_region.front()):
+                my_order = inspector.make_order_kick_max_speed(nearestAlly.position)
+
+
+            # chutar pro gol
+            if self.is_near(my_region, goal_region, 1):
+                goalCorner = self.getGoalCorner(inspector)
+                my_order = inspector.make_order_kick_max_speed(goalCorner)
+
+            print(my_order)
             return [my_order]
 
         except Exception as e:
