@@ -120,4 +120,23 @@ class MyBot(lugo4py.Bot, ABC):
                 if (nearestPlayers >= maxPlayers):
                     return False
         return True
+
+    def getNearestAlly(self, me: lugo4py.Player, myTeam: List[lugo4py.Player]):
+        nearestPlayer = None
+        lastDistance = lugo4py.specs.FIELD_WIDTH
+        for teamMate in myTeam:
+            distanceBetweenMeAndPlayer = lugo4py.geo.distance_between_points(me.position, teamMate.position)
+            if distanceBetweenMeAndPlayer < lastDistance and me.number != teamMate.number:
+                nearestPlayer = teamMate
+            lastDistance = distanceBetweenMeAndPlayer
+        return nearestPlayer
     
+    def getNearestOpponent(self, me: lugo4py.Player, opponentTeam: List[lugo4py.Player]):
+        nearestPlayer = None
+        lastDistance = lugo4py.specs.FIELD_WIDTH
+        for opponent in opponentTeam:
+            distanceBetweenMeAndPlayer = lugo4py.geo.distance_between_points(me.position, opponent.position)
+            if distanceBetweenMeAndPlayer < lastDistance:
+                nearestPlayer = opponent
+            lastDistance = distanceBetweenMeAndPlayer
+        return nearestPlayer
