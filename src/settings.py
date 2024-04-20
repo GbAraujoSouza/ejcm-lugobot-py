@@ -27,10 +27,10 @@ def get_my_expected_position(inspector: lugo4py.GameSnapshotInspector, my_mapper
 
     player_tactic_positions = {
         'DEFENSIVE': {
-            2: {'Col': 1, 'Row': 1},
+            2: {'Col': 1, 'Row': 2},
             3: {'Col': 2, 'Row': 2},
             4: {'Col': 2, 'Row': 3},
-            5: {'Col': 1, 'Row': 4},
+            5: {'Col': 1, 'Row': 3},
             6: {'Col': 3, 'Row': 1},
             7: {'Col': 3, 'Row': 2},
             8: {'Col': 3, 'Row': 3},
